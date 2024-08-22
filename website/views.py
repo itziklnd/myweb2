@@ -104,12 +104,6 @@ def logout_admin():
     session.pop('admin', None)  # Remove admin from session
     return jsonify({'success': True})
 
-@views.route('/logout')
-@login_required
-def logout():
-    session.pop('admin', None)  # Remove admin status from session
-    return redirect(url_for('views.home'))
-
 @views.route('/login')
 def login():
     # Implement login logic here

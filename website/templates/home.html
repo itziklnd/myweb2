@@ -1,6 +1,5 @@
-{% extends "base.html" %}
-{% block title %}Home{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+%}
 <h1 class="text-center">Tasks</h1>
 
 <div class="border rounded p-4 mb-4 shadow-sm bg-white">
@@ -62,11 +61,22 @@
 
   <div id="admin-section" class="d-none mt-4">
     <h2>ממשק ניהול</h2>
-    <input type="password" id="admin-password" class="form-control" placeholder="סיסמת מנהל">
+    <input
+      type="password"
+      id="admin-password"
+      class="form-control"
+      placeholder="סיסמת מנהל"
+    />
     <button class="btn btn-danger mt-2" onclick="adminLogin()">כניסה</button>
-    <button class="btn btn-warning mt-2" onclick="logoutAdmin()">התנתקות</button>
-    <button class="btn btn-warning mt-2" onclick="resetPoints()">איפוס נקודות</button>
-    <button class="btn btn-danger mt-2" onclick="resetDatabase()">איפוס הכל</button>
+    <button class="btn btn-warning mt-2" onclick="logoutAdmin()">
+      התנתקות
+    </button>
+    <button class="btn btn-warning mt-2" onclick="resetPoints()">
+      איפוס נקודות
+    </button>
+    <button class="btn btn-danger mt-2" onclick="resetDatabase()">
+      איפוס הכל
+    </button>
   </div>
 
   <button class="btn btn-warning mt-4" onclick="openAdminLogin()">
@@ -80,94 +90,94 @@
 
 <script>
   function openAdminLogin() {
-    document.getElementById('admin-section').classList.toggle('d-none');
+    document.getElementById("admin-section").classList.toggle("d-none");
   }
 
   function adminLogin() {
-    let password = document.getElementById('admin-password').value;
-    if (password === '1234') {
-      alert('Welcome, Admin!');
-      fetch('/admin-login', {
-        method: 'POST',
+    let password = document.getElementById("admin-password").value;
+    if (password === "1234") {
+      alert("Welcome, Admin!");
+      fetch("/admin-login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
-          'admin-password': password
-        })
+          "admin-password": password,
+        }),
       })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          document.getElementById('admin-section').classList.add('d-none');
-          document.querySelector('p.text-success').style.display = 'block';
-          document.getElementById('admin-section').classList.remove('d-none');
-        }
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            document.getElementById("admin-section").classList.add("d-none");
+            document.querySelector("p.text-success").style.display = "block";
+            document.getElementById("admin-section").classList.remove("d-none");
+          }
+        });
     } else {
-      alert('Incorrect password');
+      alert("Incorrect password");
     }
   }
 
   function logoutAdmin() {
-    fetch('/logout-admin', {
-      method: 'POST'
+    fetch("/logout-admin", {
+      method: "POST",
     })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        document.querySelector('p.text-success').style.display = 'none';
-        document.getElementById('admin-section').classList.add('d-none');
-      }
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          document.querySelector("p.text-success").style.display = "none";
+          document.getElementById("admin-section").classList.add("d-none");
+        }
+      });
   }
 
   function resetPoints() {
-    fetch('/reset-points', {
-      method: 'POST'
+    fetch("/reset-points", {
+      method: "POST",
     })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        alert('נקודות אופסו בהצלחה');
-        location.reload();
-      } else {
-        alert('אירעה שגיאה באיפוס הנקודות.');
-      }
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          alert("נקודות אופסו בהצלחה");
+          location.reload();
+        } else {
+          alert("אירעה שגיאה באיפוס הנקודות.");
+        }
+      });
   }
 
   function resetDatabase() {
-    fetch('/reset-database', {
-      method: 'POST'
+    fetch("/reset-database", {
+      method: "POST",
     })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        alert('המערכת אופסה בהצלחה');
-        location.reload();
-      } else {
-        alert('אירעה שגיאה באיפוס המערכת.');
-      }
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          alert("המערכת אופסה בהצלחה");
+          location.reload();
+        } else {
+          alert("אירעה שגיאה באיפוס המערכת.");
+        }
+      });
   }
 
   function deleteNote(noteId) {
-    fetch('/delete-note', {
-      method: 'POST',
+    fetch("/delete-note", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ noteId: noteId })
+      body: JSON.stringify({ noteId: noteId }),
     })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        document.querySelector(`li[data-note-id="${noteId}"]`).remove();
-      } else {
-        alert('Failed to delete the note.');
-      }
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          document.querySelector(`li[data-note-id="${noteId}"]`).remove();
+        } else {
+          alert("Failed to delete the note.");
+        }
+      });
   }
 </script>
 {% endblock %}
