@@ -58,65 +58,31 @@
     </li>
     {% endfor %}
   </ul>
-
+  {% if not user.is_admin %}
   <div id="admin-section" class="d-none mt-4">
     <h2>ממשק ניהול</h2>
-    <input
-      type="password"
-      id="admin-password"
-      class="form-control"
-      placeholder="סיסמת מנהל"
-    />
-    <button class="btn btn-danger mt-2" onclick="adminLogin()">כניסה</button>
-    <button class="btn btn-warning mt-2" onclick="logoutAdmin()">
-      התנתקות
-    </button>
-    <button class="btn btn-warning mt-2" onclick="resetPoints()">
-      איפוס נקודות
-    </button>
-    <button class="btn btn-danger mt-2" onclick="resetDatabase()">
-      איפוס הכל
-    </button>
+    <form action="/admin-login" method="POST">
+      <input
+        type="password"
+        name="admin-password"
+        id="admin-password"
+        class="form-control"
+        placeholder="סיסמת מנהל"
+        required
+      />
+      <button class="btn btn-danger mt-2" type="submit">כניסה</button>
+    </form>
   </div>
 
   <button class="btn btn-warning mt-4" onclick="openAdminLogin()">
     כניסה למנהל
   </button>
-
-  {% if admin %}
-  <p class="mt-4 text-center text-success">אתה אדמין</p>
   {% endif %}
 </div>
 
 <script>
   function openAdminLogin() {
     document.getElementById("admin-section").classList.toggle("d-none");
-  }
-
-  function adminLogin() {
-    let password = document.getElementById("admin-password").value;
-    if (password === "1234") {
-      alert("Welcome, Admin!");
-      fetch("/admin-login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          "admin-password": password,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
-            document.getElementById("admin-section").classList.add("d-none");
-            document.querySelector("p.text-success").style.display = "block";
-            document.getElementById("admin-section").classList.remove("d-none");
-          }
-        });
-    } else {
-      alert("Incorrect password");
-    }
   }
 
   function logoutAdmin() {
