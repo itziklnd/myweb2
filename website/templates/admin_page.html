@@ -1,0 +1,42 @@
+{% extends "base.html" %} {% block title %}Admin{% endblock %} {% block content
+%}
+<h3>Admin page</h3>
+
+<a href="/admin-logout" class="btn btn-danger mt-2">התנתקות מהאדמין</a>
+
+<ul id="user-list" class="list-group">
+    {% for user1 in users.query.all() %}
+    <li
+      class="list-group-item d-flex justify-content-between align-items-center bg-light border-0 mb-2 rounded"
+      data-user-id="{{ user1.id }}"
+    >
+      <span>{{ user1.username }} - נקודות {{ user1.points }}</span>
+  
+      <div class="dropdown">
+        <button
+          class="btn btn-secondary dropdown-toggle"
+          type="button"
+          id="dropdownMenuButton{{ user1.id }}"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          אפשרויות
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ user1.id }}">
+          {% if user1.is_allowed %}
+          <a href="/block-user/{{ user1.id }}" class="dropdown-item">חסום משתמש</a>
+          {% else %}
+          <a href="/allow-user/{{ user1.id }}" class="dropdown-item">בטל חסימת משתמש</a>
+          {% endif %}
+          <a href="/view-user/{{ user1.id }}" class="dropdown-item">צפה בפרופיל</a>
+          <a href="/edit-user/{{ user1.id }}" class="dropdown-item">ערוך משתמש</a>
+          <a href="/delete-user/{{ user1.id }}" class="dropdown-item text-danger">מחק משתמש</a>
+        </div>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  
+
+{% endblock %}
