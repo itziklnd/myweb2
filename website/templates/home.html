@@ -1,11 +1,13 @@
-{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
-%}
-<h1 class="text-center">Tasks</h1>
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h1 class="text-center my-4">ניהול משימות</h1>
 
-<div class="border rounded p-4 mb-4 shadow-sm bg-white">
+<div class="border rounded p-4 mb-4 shadow-sm bg-light">
   <form method="POST" action="/add-task">
-    <div class="mt-4">
-      <h2>ניהול משימות</h2>
+    <h2 class="mb-4">הוסף משימה חדשה</h2>
+    <div class="form-group">
+      <label for="task-desc">תיאור משימה</label>
       <input
         type="text"
         name="task-desc"
@@ -14,11 +16,14 @@
         placeholder="תיאור משימה"
         required
       />
+    </div>
+    <div class="form-group">
+      <label for="task-points">נקודות</label>
       <input
         type="number"
         name="task-points"
         id="task-points"
-        class="form-control mt-2"
+        class="form-control"
         placeholder="נקודות"
         min="1"
         required
@@ -29,11 +34,11 @@
     </div>
   </form>
 
-  <h3 class="mt-3 mb-4 text-center">רשימת משימות</h3>
+  <h3 class="mt-5 mb-4 text-center">רשימת משימות</h3>
   <ul id="task-list" class="list-group">
     {% for note in notes %}
     <li
-      class="list-group-item d-flex justify-content-between align-items-center bg-light border-0 mb-2 rounded"
+      class="list-group-item d-flex justify-content-between align-items-center bg-light border border-primary mb-2 rounded"
       data-note-id="{{ note.id }}"
     >
       <span>{{ note.data }} - {{ note.points }} נקודות (זמין)</span>
@@ -48,28 +53,32 @@
     {% endfor %}
   </ul>
 
-  <h3 class="mt-4">לוח ניקוד</h3>
+  <h3 class="mt-5 text-center">לוח ניקוד</h3>
   <ul id="points-board" class="list-group">
     {% for user in users %}
     <li
-      class="list-group-item d-flex justify-content-between align-items-center bg-light border-0 mb-2 rounded"
+      class="list-group-item d-flex justify-content-between align-items-center bg-light border border-secondary mb-2 rounded"
     >
       <span>{{ user.username }} - {{ user.points }}</span>
     </li>
     {% endfor %}
   </ul>
+
   {% if not user.is_admin %}
   <div id="admin-section" class="d-none mt-4">
     <h2>ממשק ניהול</h2>
     <form action="/admin-login" method="POST">
-      <input
-        type="password"
-        name="admin-password"
-        id="admin-password"
-        class="form-control"
-        placeholder="סיסמת מנהל"
-        required
-      />
+      <div class="form-group">
+        <label for="admin-password">סיסמת מנהל</label>
+        <input
+          type="password"
+          name="admin-password"
+          id="admin-password"
+          class="form-control"
+          placeholder="סיסמת מנהל"
+          required
+        />
+      </div>
       <button class="btn btn-danger mt-2" type="submit">כניסה</button>
     </form>
   </div>
