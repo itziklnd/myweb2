@@ -1,7 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from sqlalchemy.sql import func
-from sqlalchemy.types import JSON
 from . import db
 
 class Task(db.Model):
@@ -21,3 +20,5 @@ class User(db.Model, UserMixin):
     is_admin = db.Column(db.Boolean, default=False)
     is_allowed = db.Column(db.Boolean, default=True)
     login_dates = db.Column(db.JSON, default=list)
+    data = db.Column(db.String, default="")
+    tasks_complete = db.Column(db.String, default="")
