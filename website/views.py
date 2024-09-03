@@ -9,8 +9,6 @@ ADMIN_PASSWORD = '1234'
 
 views = Blueprint('views', __name__)
 
-
-
 @views.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
@@ -61,7 +59,6 @@ def delete_note():
     
     return jsonify({'success': False})
 
-
 @views.route('/admin-login', methods=['POST'])
 def admin_login():
     print(ADMIN_PASSWORD)
@@ -74,49 +71,6 @@ def admin_login():
             user.is_admin = True
             db.session.commit()
             return redirect(url_for('views.home'))
-
-# @views.route('/reset-points', methods=['POST'])
-# @login_required
-# def reset_points():
-#     if not session.get('admin', False):
-#         return jsonify({'success': False})
-
-#     users = User.query.all()
-#     for user in users:
-#         user.points = 0
-
-#     db.session.commit()
-#     return jsonify({'success': True})
-
-# @views.route('/reset-database', methods=['POST'])
-# @login_required
-# def reset_database():
-#     if not session.get('admin', False):
-#         flash('Unauthorized', category='error')
-#         return redirect(url_for('views.home'))
-
-#     # Delete all tasks and users
-#     try:
-#         Task.query.delete()
-#         User.query.delete()
-#         db.session.commit()
-#         flash('Database has been reset!', category='success')
-#         return jsonify({'success': True})
-#     except Exception as e:
-#         db.session.rollback()
-#         flash(f'Error resetting database: {str(e)}', category='error')
-#         return jsonify({'success': False})
-
-# @views.route('/logout-admin', methods=['POST'])
-# @login_required
-# def logout_admin():
-#     session.pop('admin', None)  # Remove admin from session
-#     return jsonify({'success': True})
-
-# @views.route('/login')
-# def login():
-#     # Implement login logic here
-#     return render_template("login.html")
 
 @views.route('/add-task', methods=['POST'])
 @login_required
@@ -137,4 +91,4 @@ def add_task():
         except ValueError:
             flash('Points must be a number!', category='error')
     
-    return redirect('/')
+    return redirect(url_for('views.home'))

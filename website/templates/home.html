@@ -45,7 +45,7 @@
       <button
         type="button"
         class="btn btn-danger btn-sm"
-        onclick="deleteNote({{ note.id }})"
+        onclick="deleteNoteAndRefresh({{ note.id }})"
       >
         קח משימה
       </button>
@@ -94,6 +94,24 @@
     document.getElementById("admin-section").classList.toggle("d-none");
   }
 
+  function deleteNoteAndRefresh(noteId) {
+    fetch("/delete-note", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ noteId: noteId }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          location.reload(); // Refresh the page after successfully deleting the note
+        } else {
+          alert("Failed to delete the note.");
+        }
+      });
+  }
+
   function logoutAdmin() {
     fetch("/logout-admin", {
       method: "POST",
@@ -133,24 +151,6 @@
           location.reload();
         } else {
           alert("אירעה שגיאה באיפוס המערכת.");
-        }
-      });
-  }
-
-  function deleteNote(noteId) {
-    fetch("/delete-note", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ noteId: noteId }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          document.querySelector(`li[data-note-id="${noteId}"]`).remove();
-        } else {
-          alert("Failed to delete the note.");
         }
       });
   }
