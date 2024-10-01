@@ -5,14 +5,13 @@ from . import db
 import json
 from werkzeug.security import generate_password_hash, check_password_hash
 
-ADMIN_PASSWORD = '1234'
+ADMIN_PASSWORD = 'admin1234'
 
 views = Blueprint('views', __name__)
 
 @views.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
-    print(current_user.is_admin)
     if request.method == 'POST':
         task_desc = request.form.get('task-desc')
         task_points = request.form.get('task-points')
@@ -61,16 +60,16 @@ def delete_note():
 
 @views.route('/admin-login', methods=['POST'])
 def admin_login():
-    print(ADMIN_PASSWORD)
     password = request.form.get('admin-password')
-    print(password)
 
     if password == ADMIN_PASSWORD:
         user = User.query.filter_by(id=current_user.id).first()
         if user:
             user.is_admin = True
             db.session.commit()
-            return redirect(url_for('views.home'))
+    else:
+        flash('Incorrect code!', category='error')
+    return redirect(url_for('views.home'))
 
 @views.route('/add-task', methods=['POST'])
 @login_required

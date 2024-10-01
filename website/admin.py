@@ -53,7 +53,6 @@ def allow_user(user_id):
 def update_user_points(user_id):
     user = User.query.get(user_id)
     points = request.form.get('points')
-    print(points)
     if user:
         user.points = points
         db.session.commit()
@@ -67,7 +66,6 @@ def update_user_points(user_id):
 def update_user_username(user_id):
     user = User.query.get(user_id)
     username = request.form.get('username')
-    print(username)
     if user:
         user.username = username
         db.session.commit()

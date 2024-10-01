@@ -46,28 +46,3 @@ def split_data(data, delimiter=':', max_splits=None):
     return parts
 
 
-def update_user_column(user_id, new_item):
-    from .models import User  # ייבוא של המודל
-    user = User.query(User).filter_by(id=user_id).one_or_none()
-        
-    if user is None:
-        print(f"משתמש עם ID {user_id} לא נמצא.")
-        return
-    
-    # חילוק המחרוזת לחלקים
-    data =user.data  # הנחה שהעמודה שלך נקראת data
-    parts = data.split(';')
-    
-    # הוספת הפריט החדש לרשימה
-    parts.append(str(new_item))
-    
-    # חיבור הרשימה חזרה למחרוזת
-    updated_data = ';'.join(parts)
-    
-    # עדכון השדה בעמודה
-    user.data = updated_data
-    db.session.commit()
-    
-    # שמירה של השינויים בבסיס הנתונים
-    print(f"העמודה עודכנה בהצלחה עבור משתמש עם ID {user.id}.")
-    print(user.data)
