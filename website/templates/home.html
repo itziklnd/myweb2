@@ -105,22 +105,53 @@
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          location.reload(); // Refresh the page after successfully deleting the note
+          // Remove the task from the list instead of reloading the page
+          document.querySelector(`[data-note-id='${noteId}']`).remove();
+          location.reload(); // Refresh the page after successful deletion
+        } else {
+          alert("Failed to delete the note.");
+        }
+      });
+  }
+  function deleteNoteAndRefresh(noteId) {
+    fetch("/delete-note", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ noteId: noteId }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          // Remove the task from the list instead of reloading the page
+          document.querySelector(`[data-note-id='${noteId}']`).remove();
+          location.reload(); // Refresh the page after successful deletion
         } else {
           alert("Failed to delete the note.");
         }
       });
   }
 
-  function logoutAdmin() {
-    fetch("/logout-admin", {
-      method: "POST",
+  
+  function updatePointsBoard() {
+    fetch("/get-points", {
+      method: "GET",
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          document.querySelector("p.text-success").style.display = "none";
-          document.getElementById("admin-section").classList.add("d-none");
+          const pointsBoard = document.getElementById("points-board");
+          pointsBoard.innerHTML = ""; // Clear existing content
+          data.users.forEach(user => {
+            pointsBoard.innerHTML += `
+              <li class="list-group-item d-flex justify-content-between align-items-center bg-light border border-secondary mb-2 rounded">
+                <span>${user.username} - ${user.points}</span>
+              </li>
+            `;
+          });
+        } else {
+          alert("Failed to fetch points.");
         }
       });
   }
@@ -133,7 +164,7 @@
       .then((data) => {
         if (data.success) {
           alert("נקודות אופסו בהצלחה");
-          location.reload();
+          updatePointsBoard(); // Update the scoreboard instead of reloading the page
         } else {
           alert("אירעה שגיאה באיפוס הנקודות.");
         }
@@ -148,7 +179,7 @@
       .then((data) => {
         if (data.success) {
           alert("המערכת אופסה בהצלחה");
-          location.reload();
+          // Update the content if needed instead of reloading the page
         } else {
           alert("אירעה שגיאה באיפוס המערכת.");
         }

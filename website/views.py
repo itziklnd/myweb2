@@ -92,3 +92,13 @@ def add_task():
             flash('Points must be a number!', category='error')
     
     return redirect(url_for('views.home'))
+
+@views.route('/get-points', methods=['GET'])
+@login_required
+def get_points():
+    if not current_user.is_admin:
+        return jsonify({"success": False}), 403
+    
+    users = User.query.all()  # או מה שמתאים לך
+    users_data = [{"username": user.username, "points": user.points} for user in users]
+    return jsonify({"success": True, "users": users_data})

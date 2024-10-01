@@ -47,3 +47,31 @@ def allow_user(user_id):
     else:
         flash('User not found.', category='error')
     return redirect(url_for('admin.admin_page'))
+
+@admin.route('/update-user-points/<int:user_id>', methods=['POST'])
+@login_required
+def update_user_points(user_id):
+    user = User.query.get(user_id)
+    points = request.form.get('points')
+    print(points)
+    if user:
+        user.points = points
+        db.session.commit()
+        flash('User\'s points has been changed successfully.', category='success')
+    else:
+        flash('User not found.', category='error')
+    return redirect(url_for('admin.admin_page'))
+
+@admin.route('/update-user-username/<int:user_id>', methods=['POST'])
+@login_required
+def update_user_username(user_id):
+    user = User.query.get(user_id)
+    username = request.form.get('username')
+    print(username)
+    if user:
+        user.username = username
+        db.session.commit()
+        flash('User\'s name has been changed successfully.', category='success')
+    else:
+        flash('User not found.', category='error')
+    return redirect(url_for('admin.admin_page'))

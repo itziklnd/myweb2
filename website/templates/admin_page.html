@@ -1,92 +1,230 @@
-{% extends "base.html" %}
-{% block title %}Admin{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}Admin{% endblock %} {% block content
+%}
 
 <div class="container mt-5">
-    <h3 class="text-center mb-4">עמוד ניהול</h3>
+  <h3 class="text-center mb-4">עמוד ניהול</h3>
 
-    <div class="text-right">
-        <a href="/admin-logout" class="btn btn-danger">התנתקות מהאדמין</a>
-    </div>
+  <div class="text-right">
+    <a href="/admin-logout" class="btn btn-danger">התנתקות מהאדמין</a>
+  </div>
 
-    <ul id="user-list" class="list-group mt-4">
-        {% for user1 in users %}
-        <li
-          class="list-group-item d-flex flex-column bg-light border-0 mb-3 rounded shadow-sm position-relative"
-          data-user-id="{{ user1.id }}"
+  <ul id="user-list" class="list-group mt-4">
+    {% for user1 in users %}
+    <li
+      class="list-group-item d-flex flex-column bg-light border-0 mb-3 rounded shadow-sm position-relative"
+      data-user-id="{{ user1.id }}"
+    >
+      <div class="d-flex justify-content-between align-items-center">
+        {% if user != user1 %}
+        <span class="font-weight-bold"
+          >{{ user1.username }} - נקודות {{ user1.points }}</span
         >
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="font-weight-bold">{{ user1.username }} - נקודות {{ user1.points }}</span>
-                <button
-                  class="btn btn-secondary dropdown-toggle"
-                  type="button"
-                  data-toggle="collapse"
-                  data-target="#dropdownMenu{{ user1.id }}"
-                  aria-expanded="false"
-                  aria-controls="dropdownMenu{{ user1.id }}"
-                >
-                  אפשרויות
-                </button>
-            </div>
-
-            <div
-              id="dropdownMenu{{ user1.id }}"
-              class="collapse mt-2"
-            >
-                <div class="card card-body border-0 shadow">
-                    {% if user1.is_allowed %}
-                    <a href="/block-user/{{ user1.id }}" class="dropdown-item text-dark">חסום משתמש</a>
-                    {% else %}
-                    <a href="/allow-user/{{ user1.id }}" class="dropdown-item text-dark">בטל חסימת משתמש</a>
-                    {% endif %}
-                    <button type="button" class="dropdown-item text-dark" data-toggle="modal" data-target="#userModal{{ user1.id }}">
-                        פרטי משתמש
-                    </button>
-                    <a href="/edit-user/{{ user1.id }}" class="dropdown-item text-dark">ערוך משתמש</a>
-                    <a href="/delete-user/{{ user1.id }}" class="dropdown-item text-danger">מחק משתמש</a>
-                </div>
-            </div>
-        </li>
-
-        <!-- חלון המודאל עבור משתמש מסוים -->
-        <div
-          class="modal fade"
-          id="userModal{{ user1.id }}"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="userModalLabel{{ user1.id }}"
-          aria-hidden="true"
+        {% else %}
+        <span class="font-weight-bold"
+          >{{ user1.username }} (You) - נקודות {{ user1.points }}</span
         >
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="userModalLabel{{ user1.id }}">פרטים של {{ user1.username }}</h5>
-                        <button
-                          type="button"
-                          class="close"
-                          data-dismiss="modal"
-                          aria-label="Close"
-                        >
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p><strong>שם משתמש:</strong> {{ user1.username }}</p>
-                        <p><strong>אימייל:</strong> {{ user1.email }}</p>
-                        <p><strong>תאריך יצירה:</strong> {{ user1.data.split(';')[1] }}</p>
-                        <!-- אפשר להוסיף כאן עוד פרטים לפי הצורך -->
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                            סגור
-                        </button>
-                    </div>
-                </div>
-            </div>
+        {% endif %}
+        <button
+          class="btn btn-secondary dropdown-toggle"
+          type="button"
+          data-toggle="collapse"
+          data-target="#dropdownMenu{{ user1.id }}"
+          aria-expanded="false"
+          aria-controls="dropdownMenu{{ user1.id }}"
+        >
+          אפשרויות
+        </button>
+      </div>
+
+      <div id="dropdownMenu{{ user1.id }}" class="collapse mt-2">
+        <div class="card card-body border-0 shadow">
+          {% if user1.is_allowed %}
+          <a href="/block-user/{{ user1.id }}" class="dropdown-item text-dark"
+            >חסום משתמש</a
+          >
+          {% else %}
+          <a href="/allow-user/{{ user1.id }}" class="dropdown-item text-dark"
+            >בטל חסימת משתמש</a
+          >
+          {% endif %}
+          <button
+            type="button"
+            class="dropdown-item text-dark"
+            data-toggle="modal"
+            data-target="#userModal{{ user1.id }}"
+          >
+            פרטי משתמש
+          </button>
+          <button
+            type="button"
+            class="dropdown-item text-dark"
+            data-toggle="modal"
+            data-target="#editPointsModal{{ user1.id }}"
+          >
+            שנה נקודות
+          </button>
+          <button
+          type="button"
+          class="dropdown-item text-dark"
+          data-toggle="modal"
+          data-target="#editUsernameModal{{ user1.id }}"
+        >
+          שנה שם משתמש
+        </button>
+        
+          <a
+            href="/delete-user/{{ user1.id }}"
+            class="dropdown-item text-danger"
+            >מחק משתמש</a
+          >
         </div>
+      </div>
+    </li>
 
-        {% endfor %}
-    </ul>
+    <!-- חלון המודאל עבור משתמש מסוים -->
+    <div
+      class="modal fade"
+      id="userModal{{ user1.id }}"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="userModalLabel{{ user1.id }}"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="userModalLabel{{ user1.id }}">
+              פרטים של {{ user1.username }}
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p><strong>שם משתמש:</strong> {{ user1.username }}</p>
+            <p><strong>אימייל:</strong> {{ user1.email }}</p>
+            <p><strong>תאריך יצירה:</strong> {{ user1.data.split(';')[1] }}</p>
+            <!-- אפשר להוסיף כאן עוד פרטים לפי הצורך -->
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              סגור
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div
+  class="modal fade"
+  id="editUsernameModal{{ user1.id }}"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="editUsernameModalLabel{{ user1.id }}"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editUsernameModalLabel{{ user1.id }}">
+          שינוי שם משתמש של {{ user1.username }}
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form method="POST" action="/update-user-username/{{ user1.id }}">
+          <div class="form-group">
+            <label for="username{{ user1.id }}">שם משתמש חדש</label>
+            <input
+              type="text"
+              name="username"
+              id="username{{ user1.id }}"
+              class="form-control"
+              placeholder="הזן שם משתמש חדש"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-success">שמור</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          סגור
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <div
+      class="modal fade"
+      id="editPointsModal{{ user1.id }}"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="editPointsModalLabel{{ user1.id }}"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editPointsModalLabel{{ user1.id }}">
+              שינוי נקודות של {{ user1.username }}
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <form method="POST" action="/update-user-points/{{ user1.id }}">
+              <div class="form-group">
+                <p> ניקוד - {{ user1.points }}</p>
+
+                <label for="points{{ user1.id }}">נקודות חדשות</label>
+                <input
+                  type="number"
+                  name="points"
+                  id="points{{ user1.id }}"
+                  class="form-control"
+                  placeholder="הזן מספר נקודות"
+                  required
+                />
+              </div>
+              <button type="submit" class="btn btn-success">שמור</button>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              סגור
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </ul>
 </div>
 
 {% endblock %}
